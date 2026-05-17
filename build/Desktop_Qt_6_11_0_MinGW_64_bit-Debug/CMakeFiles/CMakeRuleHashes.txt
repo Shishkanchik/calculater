@@ -1,4 +1,0 @@
-# Hashes of file build rules.
-69ed607b28c25bd46132dd9b71251667 .qt/rcc/qrc_images.cpp
-b544572f95df6156da6c4709ea6d7e13 CMakeFiles/calculator_autogen
-70ed31f505a445c35543165f5a2b797f calculator_autogen/timestamp
