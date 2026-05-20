@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="img/mask.png">D:/Qt/calculator/img/mask.png</file>
+  </qresource>
+</RCC>
+

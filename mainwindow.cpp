@@ -36,7 +36,7 @@ void MainWindow::updateWindow()
         ui->window->setText(a);
 
     }
-    else if(state == State::InputAction)
+    else if(state == State::InputAction && !action.isEmpty())
     {
 
         ui->window->setText(action);
@@ -71,15 +71,19 @@ void MainWindow::updateWindow(QString message)
 
 void MainWindow::setupPushButton()
 {
-    QString texts[16]
+
+    const int COUNT_PUSH_BUTTON = 18;
+
+    QString texts[COUNT_PUSH_BUTTON]
     {
         "0", "Clear", "/", "*",
         "1", "2", "3", "-",
         "4", "5", "6", "+",
-        "7", "8", "9", "="
+        "7", "8", "9", "=",
+        ".", "+/-"
     };
 
-    for(int i = 0; i < 16; i++)
+    for(int i = 0; i < COUNT_PUSH_BUTTON; i++)
     {
         QString name = "push_" + QString::number(i);
 
@@ -105,16 +109,30 @@ void MainWindow::appendDigit(const QString digit)
 
     if(!action.isEmpty() && state != State::Result)
     {
+
         state = State::InputB;
+
     }
 
     if(state == State::InputA)
     {
 
-        if(a == "0")
+        if(a == "0" || a == "-0")
         {
 
-            a = digit;
+            if(a == "0")
+            {
+
+                a = digit;
+
+            }
+            else if(a == "-0")
+            {
+
+                a = digit;
+                a.prepend("-");
+
+            }
 
         }
         else
@@ -127,10 +145,22 @@ void MainWindow::appendDigit(const QString digit)
     }
     else if(state == State::InputB)
     {
-        if(b == "0")
+        if(b == "0" || b == "-0")
         {
 
-            b = digit;
+            if(b == "0")
+            {
+
+                b = digit;
+
+            }
+            else if(b == "-0")
+            {
+
+                b = digit;
+                b.prepend("-");
+
+            }
 
         }
         else
@@ -163,6 +193,7 @@ void MainWindow::on_push_1_clicked()
     a.clear();
     b.clear();
     action.clear();
+    result = 0;
     state = State::InputA;
 
     updateWindow();
@@ -293,8 +324,6 @@ void MainWindow::on_push_15_clicked()
     if(state == State::Result)
     {
 
-        double result;
-
         if(action == "+")
         {
 
@@ -315,18 +344,110 @@ void MainWindow::on_push_15_clicked()
         }
         else if(action == "/")
         {
-            if(b == "0")
-            {
 
-                updateWindow("ERROR");
-                return;
-            }
-            result = a.toDouble() / b.toDouble();
+                if(b == "0")
+                {
+
+                    updateWindow("ERROR");
+                    return;
+                }
+
+                result = a.toDouble() / b.toDouble();
 
         }
 
         updateWindow(result);
+        a = QString::number(result);
+        state = State::InputAction;
+        b.clear();
+        action.clear();
 
     }
+}
+
+
+void MainWindow::on_push_16_clicked()
+{
+    bool isDoubleA = a.contains(".");
+    bool isDoubleB = b.contains(".");
+
+    if(state == State::InputA && !a.isEmpty() && !isDoubleA)
+    {
+
+        a.append(".");
+
+    }
+    else if(state == State::InputB && !b.isEmpty() && !isDoubleB)
+    {
+
+        b.append(".");
+
+    }
+
+    updateWindow();
+}
+
+
+void MainWindow::on_push_17_clicked()
+{
+
+    if(state == State::InputA)
+    {
+        bool isNegativeA = a.contains("-");
+
+        if(isNegativeA)
+        {
+
+            a.removeFirst();
+
+        }
+        else if(a.isEmpty())
+        {
+
+            a.prepend("-0");
+
+        }
+        else
+        {
+
+            a.prepend("-");
+
+        }
+
+    }
+    else if(state == State::InputB || (state == State::InputAction && !action.isEmpty()))
+    {
+        if(state == State::InputAction && !action.isEmpty())
+        {
+
+            state = State::InputB;
+
+        }
+
+        bool isNegativeB = b.contains("-");
+
+        if(isNegativeB)
+        {
+
+            b.removeFirst();
+
+        }
+        else if(b.isEmpty())
+        {
+
+            b.prepend("-0");
+
+        }
+        else
+        {
+
+            b.prepend("-");
+
+        }
+
+    }
+
+    updateWindow();
+
 }
 

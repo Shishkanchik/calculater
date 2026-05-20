@@ -50,6 +50,10 @@ private slots:
 
     void on_push_15_clicked();
 
+    void on_push_16_clicked();
+
+    void on_push_17_clicked();
+
 private:
     enum class State
     {
@@ -65,6 +69,7 @@ private:
     QString a;
     QString b;
     QString action;
+    double result = 0;
 
     Ui::MainWindow *ui;
     void updateWindow();
